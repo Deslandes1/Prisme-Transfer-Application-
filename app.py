@@ -11,6 +11,21 @@ st.set_page_config(
 # ====== CUSTOM CSS ======
 st.markdown("""
 <style>
+    /* Main app background – light blue */
+    .stApp {
+        background-color: #e6f2ff !important;
+    }
+    .stApp [data-testid="stAppViewContainer"] {
+        background-color: #f0f8ff !important;
+    }
+    /* Sidebar – light blue */
+    [data-testid="stSidebar"] {
+        background-color: #cce5ff !important;
+        border-right: 1px solid #99ccff;
+    }
+    [data-testid="stSidebar"] * {
+        color: #003366 !important;
+    }
     /* Main container */
     .main-header {
         text-align: center;
@@ -61,12 +76,21 @@ st.markdown("""
         border-radius: 6px;
         font-weight: 500;
         transition: all 0.2s;
-        cursor: default;
+        cursor: pointer;
         border-left: 3px solid transparent;
+        background: rgba(255,255,255,0.3);
     }
     .partner-item:hover {
-        background: rgba(255,255,255,0.4);
+        background: rgba(255,255,255,0.6);
         transform: translateX(4px);
+    }
+    .partner-item a {
+        color: inherit !important;
+        text-decoration: none !important;
+        display: block;
+    }
+    .partner-item a:hover {
+        text-decoration: underline !important;
     }
     .region-title {
         font-weight: 700;
@@ -81,19 +105,22 @@ st.markdown("""
         text-align: center;
         padding: 1.5rem;
         margin-top: 2rem;
-        border-top: 1px solid #ddd;
+        border-top: 1px solid #99ccff;
         font-size: 0.9rem;
-        color: #555;
+        color: #003366;
+        background: rgba(255,255,255,0.5);
+        border-radius: 8px;
     }
     .footer strong {
         color: #00209F;
     }
     .form-container {
-        background: white;
+        background: rgba(255,255,255,0.85);
         padding: 2rem;
         border-radius: 12px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        border: 1px solid #e0e7ef;
+        border: 1px solid #b0d4f0;
+        backdrop-filter: blur(4px);
     }
     .form-container h2 {
         color: #00209F;
@@ -125,6 +152,14 @@ st.markdown("""
     .success-box .checkmark {
         font-size: 3rem;
         display: block;
+    }
+    .help-box {
+        background: rgba(230, 242, 255, 0.8);
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+        border: 1px solid #99ccff;
+        backdrop-filter: blur(4px);
     }
     @media (max-width: 768px) {
         .main-header h1 { font-size: 1.8rem; }
@@ -184,62 +219,65 @@ st.markdown("""
 # ====== TWO-COLUMN LAYOUT ======
 col_left, col_right = st.columns([1, 1], gap="large")
 
-# ====== LEFT COLUMN – PARTNER LIST ======
+# ====== LEFT COLUMN – PARTNER LIST WITH LINKS ======
 with col_left:
     st.markdown("### 🌍 Our Global Partners")
-    st.caption("Choose a partner to send or receive money anywhere in the world")
+    st.caption("Click any partner below to visit their platform")
 
+    # Partner data with colors and URLs
     partners = {
         "🌎 North America": [
-            ("Boss Revolution", "#1a73e8"),
-            ("SendWave", "#ff6b35"),
-            ("Tap Tap", "#00b894"),
-            ("Share Money", "#6c5ce7"),
-            ("C.A.M", "#fdcb6e"),
-            ("Digicel International", "#e17055"),
-            ("Viamericas", "#00cec9"),
-            ("Girosol", "#fd79a8"),
-            ("Cashela", "#0984e3"),
-            ("Majority", "#6ab04c"),
-            ("Intercambio Express", "#f0932b"),
-            ("RevoluSend", "#eb4d4b"),
+            ("Boss Revolution", "#1a73e8", "https://www.bossrevolution.com/"),
+            ("SendWave", "#ff6b35", "https://www.sendwave.com/"),
+            ("Tap Tap", "#00b894", "https://www.taptapsend.com/"),
+            ("Share Money", "#6c5ce7", "https://www.sharemoney.com/"),
+            ("C.A.M", "#fdcb6e", "https://www.camtransfer.com/"),
+            ("Digicel International", "#e17055", "https://www.digicelgroup.com/"),
+            ("Viamericas", "#00cec9", "https://www.viamericas.com/"),
+            ("Girosol", "#fd79a8", "https://www.girosol.com/"),
+            ("Cashela", "#0984e3", "https://www.cashela.com/"),
+            ("Majority", "#6ab04c", "https://www.majority.com/"),
+            ("Intercambio Express", "#f0932b", "https://www.intercambioexpress.com/"),
+            ("RevoluSend", "#eb4d4b", "https://www.revolusend.com/"),
         ],
         "🌍 Worldwide": [
-            ("Remitly", "#2ecc71"),
-            ("RIA Money Transfer", "#3498db"),
-            ("Xoom", "#9b59b6"),
-            ("UNFCU", "#1abc9c"),
-            ("MoneyGram", "#e67e22"),
+            ("Remitly", "#2ecc71", "https://www.remitly.com/"),
+            ("RIA Money Transfer", "#3498db", "https://www.riamoneytransfer.com/"),
+            ("Xoom", "#9b59b6", "https://www.xoom.com/"),
+            ("UNFCU", "#1abc9c", "https://www.unfcu.com/"),
+            ("MoneyGram", "#e67e22", "https://www.moneygram.com/"),
         ],
         "🌎 Latin America": [
-            ("Girofacil", "#2ecc71"),
-            ("Uno Money Transfers", "#3498db"),
-            ("More Money", "#f1c40f"),
-            ("Trans Fast", "#e74c3c"),
-            ("AFEX", "#2c3e50"),
+            ("Girofacil", "#2ecc71", "https://www.girofacil.com/"),
+            ("Uno Money Transfers", "#3498db", "https://www.unotransfer.com/"),
+            ("More Money", "#f1c40f", "https://www.moremoney.com/"),
+            ("Trans Fast", "#e74c3c", "https://www.transfast.com/"),
+            ("AFEX", "#2c3e50", "https://www.afex.com/"),
         ],
         "🇪🇺 Europe": [
-            ("Orange Money", "#e67e22"),
-            ("WorldRemit", "#2980b9"),
+            ("Orange Money", "#e67e22", "https://www.orange.com/"),
+            ("WorldRemit", "#2980b9", "https://www.worldremit.com/"),
         ],
         "🏝️ Caribbean": [
-            ("Cibao Express", "#1abc9c"),
-            ("C.A.M", "#fdcb6e"),
+            ("Cibao Express", "#1abc9c", "https://www.cibaoexpress.com/"),
+            ("C.A.M", "#fdcb6e", "https://www.camtransfer.com/"),
         ],
     }
 
     for region, partner_list in partners.items():
         st.markdown(f'<div class="region-title">{region}</div>', unsafe_allow_html=True)
-        for name, color in partner_list:
+        for name, color, url in partner_list:
             st.markdown(
                 f'<div class="partner-item" style="border-left-color: {color}; color: {color};">'
+                f'<a href="{url}" target="_blank" style="color: {color} !important;">'
                 f'<span style="font-weight: 600;">{name}</span>'
+                f'</a>'
                 f'</div>',
                 unsafe_allow_html=True
             )
         st.markdown("")
 
-    st.info("💡 **Note:** Each partner name is colored to represent their brand identity.")
+    st.info("💡 **Note:** Click any partner name to visit their official website and start your transfer.")
 
 # ====== RIGHT COLUMN – USER REGISTRATION FORM ======
 with col_right:
@@ -294,7 +332,7 @@ with col_right:
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown("""
-    <div style="background: #e6f2ff; padding: 1rem; border-radius: 8px; margin-top: 1rem; border: 1px solid #99ccff;">
+    <div class="help-box">
         <strong>📌 Need help?</strong><br>
         <span style="font-size: 0.9rem;">Contact our support team at <strong>deslandes78@gmail.com</strong> or call <strong>(509) 4738-5663</strong></span>
     </div>
