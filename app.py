@@ -8,7 +8,6 @@ import time
 # ====== CHECK FOR EDGE TTS ======
 EDGE_TTS_AVAILABLE = False
 try:
-    # Check if edge-tts is installed by trying to import it
     import edge_tts
     EDGE_TTS_AVAILABLE = True
 except ImportError:
@@ -170,76 +169,125 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# ====== VOICE SCRIPTS IN MULTIPLE LANGUAGES ======
+VOICE_SCRIPTS = {
+    "en": {
+        "name": "English",
+        "voice": "en-US-JennyNeural",
+        "script": (
+            "Welcome to Prisme Transfer. "
+            "Prisme Transfer is a global money transfer platform that connects Haiti to the world. "
+            "We partner with over 20 international money transfer companies to deliver funds directly into MonCash mobile wallets or for pick-up at Fonkoze locations. "
+            "To use our service, simply register with your personal details on the right side of this page. "
+            "First, enter your first name. Then your last name. Next, your street address, city, and your ID number. "
+            "Then provide your email address and phone number. Select your country from the dropdown. "
+            "Finally, check the terms and conditions box and click the register button. "
+            "After registering, choose a partner from the list on the left. Each partner name is a clickable link that will take you to their official website. "
+            "You can send or receive money to or from anywhere in the world. "
+            "Our partners include Boss Revolution, SendWave, Tap Tap, Share Money, C.A.M, Digicel International, Viamericas, Girosol, Cashela, Majority, Intercambio Express, RevoluSend, Remitly, RIA, Xoom, UNFCU, MoneyGram, Girofacil, Uno Money Transfers, More Money, Trans Fast, AFEX, Orange Money, WorldRemit, Cibao Express, and many more. "
+            "We also provide links to other popular transfer services like Western Union, UNITransfer, and others, even if they are not official partners. "
+            "Prisme Transfer is built for Haiti, connected to the world. "
+            "To support our platform, you can send donations to GlobalInternet.py. "
+            "Our phone number for donations is (509) 4738-5663 and our email is deslandes78@gmail.com. "
+            "Every contribution helps us improve and expand our services. "
+            "This application was built by Gesner Deslandes, Chief Engineer at GlobalInternet.py. "
+            "Contact us at (509) 4738-5663 or deslandes78@gmail.com. "
+            "Thank you for using Prisme Transfer."
+        )
+    },
+    "fr": {
+        "name": "Français",
+        "voice": "fr-FR-DeniseNeural",
+        "script": (
+            "Bienvenue sur Prisme Transfer. "
+            "Prisme Transfer est une plateforme mondiale de transfert d'argent qui connecte Haïti au monde. "
+            "Nous nous associons à plus de 20 sociétés internationales de transfert d'argent pour livrer les fonds directement dans les portefeuilles mobiles MonCash ou pour les retirer dans les agences Fonkoze. "
+            "Pour utiliser notre service, inscrivez-vous simplement avec vos coordonnées personnelles sur le côté droit de cette page. "
+            "D'abord, entrez votre prénom. Ensuite, votre nom de famille. Puis, votre adresse, votre ville et votre numéro d'identité. "
+            "Ensuite, fournissez votre adresse e-mail et votre numéro de téléphone. Sélectionnez votre pays dans le menu déroulant. "
+            "Enfin, cochez la case des conditions générales et cliquez sur le bouton d'inscription. "
+            "Après l'inscription, choisissez un partenaire dans la liste de gauche. Chaque nom de partenaire est un lien cliquable qui vous mènera à son site officiel. "
+            "Vous pouvez envoyer ou recevoir de l'argent partout dans le monde. "
+            "Nos partenaires incluent Boss Revolution, SendWave, Tap Tap, Share Money, C.A.M, Digicel International, Viamericas, Girosol, Cashela, Majority, Intercambio Express, RevoluSend, Remitly, RIA, Xoom, UNFCU, MoneyGram, Girofacil, Uno Money Transfers, More Money, Trans Fast, AFEX, Orange Money, WorldRemit, Cibao Express, et bien d'autres. "
+            "Nous fournissons également des liens vers d'autres services de transfert populaires comme Western Union, UNITransfer, et d'autres, même s'ils ne sont pas des partenaires officiels. "
+            "Prisme Transfer est construit pour Haïti, connecté au monde. "
+            "Pour soutenir notre plateforme, vous pouvez envoyer des dons à GlobalInternet.py. "
+            "Notre numéro de téléphone pour les dons est le (509) 4738-5663 et notre e-mail est deslandes78@gmail.com. "
+            "Chaque contribution nous aide à améliorer et à étendre nos services. "
+            "Cette application a été construite par Gesner Deslandes, Ingénieur en Chef chez GlobalInternet.py. "
+            "Contactez-nous au (509) 4738-5663 ou par e-mail à deslandes78@gmail.com. "
+            "Merci d'utiliser Prisme Transfer."
+        )
+    },
+    "es": {
+        "name": "Español",
+        "voice": "es-ES-ElviraNeural",
+        "script": (
+            "Bienvenido a Prisme Transfer. "
+            "Prisme Transfer es una plataforma global de transferencia de dinero que conecta a Haití con el mundo. "
+            "Nos asociamos con más de 20 empresas internacionales de transferencia de dinero para entregar fondos directamente a billeteras móviles MonCash o para recoger en ubicaciones de Fonkoze. "
+            "Para usar nuestro servicio, simplemente regístrese con sus datos personales en el lado derecho de esta página. "
+            "Primero, ingrese su nombre. Luego su apellido. A continuación, su dirección, ciudad y su número de identificación. "
+            "Luego proporcione su correo electrónico y número de teléfono. Seleccione su país en el menú desplegable. "
+            "Finalmente, marque la casilla de términos y condiciones y haga clic en el botón de registro. "
+            "Después de registrarse, elija un socio de la lista de la izquierda. Cada nombre de socio es un enlace en el que se puede hacer clic y que lo llevará a su sitio web oficial. "
+            "Puede enviar o recibir dinero a o desde cualquier parte del mundo. "
+            "Nuestros socios incluyen Boss Revolution, SendWave, Tap Tap, Share Money, C.A.M, Digicel International, Viamericas, Girosol, Cashela, Majority, Intercambio Express, RevoluSend, Remitly, RIA, Xoom, UNFCU, MoneyGram, Girofacil, Uno Money Transfers, More Money, Trans Fast, AFEX, Orange Money, WorldRemit, Cibao Express, y muchos más. "
+            "También proporcionamos enlaces a otros servicios de transferencia populares como Western Union, UNITransfer, y otros, incluso si no son socios oficiales. "
+            "Prisme Transfer está construido para Haití, conectado al mundo. "
+            "Para apoyar nuestra plataforma, puede enviar donaciones a GlobalInternet.py. "
+            "Nuestro número de teléfono para donaciones es (509) 4738-5663 y nuestro correo electrónico es deslandes78@gmail.com. "
+            "Cada contribución nos ayuda a mejorar y expandir nuestros servicios. "
+            "Esta aplicación fue construida por Gesner Deslandes, Ingeniero Jefe en GlobalInternet.py. "
+            "Contáctenos al (509) 4738-5663 o por correo a deslandes78@gmail.com. "
+            "Gracias por usar Prisme Transfer."
+        )
+    },
+    "zh": {
+        "name": "中文",
+        "voice": "zh-CN-XiaoxiaoNeural",
+        "script": (
+            "欢迎来到 Prisme Transfer。"
+            "Prisme Transfer 是一个全球性的汇款平台，将海地与世界连接起来。"
+            "我们与超过 20 家国际汇款公司合作，直接将资金存入 MonCash 手机钱包或在 Fonkoze 网点取款。"
+            "要使用我们的服务，只需在本页右侧填写您的个人信息。"
+            "首先，输入您的名字。然后输入您的姓氏。接着输入您的地址、城市和身份证号码。"
+            "然后提供您的电子邮件地址和电话号码。从下拉菜单中选择您的国家。"
+            "最后，勾选条款和条件框，然后点击注册按钮。"
+            "注册后，从左侧列表中选择一个合作伙伴。每个合作伙伴名称都是一个可点击的链接，将带您进入其官方网站。"
+            "您可以在世界任何地方发送或接收资金。"
+            "我们的合作伙伴包括 Boss Revolution、SendWave、Tap Tap、Share Money、C.A.M、Digicel International、Viamericas、Girosol、Cashela、Majority、Intercambio Express、RevoluSend、Remitly、RIA、Xoom、UNFCU、MoneyGram、Girofacil、Uno Money Transfers、More Money、Trans Fast、AFEX、Orange Money、WorldRemit、Cibao Express 等等。"
+            "我们还提供其他流行汇款服务的链接，如 Western Union、UNITransfer 等，即使它们不是官方合作伙伴。"
+            "Prisme Transfer 为海地而生，与世界相连。"
+            "为了支持我们的平台，您可以向 GlobalInternet.py 捐款。"
+            "我们的捐款电话是 (509) 4738-5663，电子邮件是 deslandes78@gmail.com。"
+            "每一笔捐款都有助于我们改善和扩展服务。"
+            "此应用程序由 GlobalInternet.py 的首席工程师 Gesner Deslandes 构建。"
+            "请通过 (509) 4738-5663 或 deslandes78@gmail.com 与我们联系。"
+            "感谢您使用 Prisme Transfer。"
+        )
+    }
+}
+
 # ====== VOICE FUNCTIONS ======
-def get_voice_script():
-    return (
-        "Welcome to Prisme Transfer. "
-        "Prisme Transfer is a global money transfer platform that connects Haiti to the world. "
-        "We partner with over 20 international money transfer companies to deliver funds directly into MonCash mobile wallets or for pick-up at Fonkoze locations. "
-        "To use our service, simply register with your personal details on the right side of this page. "
-        "First, enter your first name. Then your last name. Next, your street address, city, and your ID number. "
-        "Then provide your email address and phone number. Select your country from the dropdown. "
-        "Finally, check the terms and conditions box and click the register button. "
-        "After registering, choose a partner from the list on the left. Each partner name is a clickable link that will take you to their official website. "
-        "You can send or receive money to or from anywhere in the world. "
-        "Our partners include Boss Revolution, SendWave, Tap Tap, Share Money, C.A.M, Digicel International, Viamericas, Girosol, Cashela, Majority, Intercambio Express, RevoluSend, Remitly, RIA, Xoom, UNFCU, MoneyGram, Girofacil, Uno Money Transfers, More Money, Trans Fast, AFEX, Orange Money, WorldRemit, Cibao Express, and many more. "
-        "We also provide links to other popular transfer services like Western Union, UNITransfer, and others, even if they are not official partners. "
-        "Prisme Transfer is built for Haiti, connected to the world. "
-        "To support our platform, you can send donations to GlobalInternet.py. "
-        "Our phone number for donations is (509) 4738-5663 and our email is deslandes78@gmail.com. "
-        "Every contribution helps us improve and expand our services. "
-        "This application was built by Gesner Deslandes, Chief Engineer at GlobalInternet.py. "
-        "Contact us at (509) 4738-5663 or deslandes78@gmail.com. "
-        "Thank you for using Prisme Transfer."
-    )
-
-def text_to_speech_edge_tts(text):
-    """Generate speech using edge-tts (async)"""
-    try:
-        import edge_tts
-        import asyncio
-        
-        voice = "en-US-JennyNeural"
-        
-        async def generate_audio():
-            communicate = edge_tts.Communicate(text, voice)
-            with tempfile.NamedTemporaryFile(delete=False, suffix='.mp3') as tmp:
-                tmp_path = tmp.name
-            await communicate.save(tmp_path)
-            return tmp_path
-        
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        audio_path = loop.run_until_complete(generate_audio())
-        loop.close()
-        
-        with open(audio_path, 'rb') as f:
-            audio_bytes = f.read()
-        os.unlink(audio_path)
-        return audio_bytes
-    except Exception as e:
-        st.error(f"❌ Voice generation failed: {e}")
-        return None
-
-def text_to_speech_subprocess(text):
-    """Generate speech using edge-tts via subprocess (more reliable in Streamlit Cloud)"""
+def text_to_speech_subprocess(text, voice):
+    """Generate speech using edge-tts via subprocess (reliable)."""
     try:
         import tempfile
         import subprocess
         import os
         
-        voice = "en-US-JennyNeural"
         tmp_path = tempfile.NamedTemporaryFile(delete=False, suffix='.mp3').name
         
         # Create a temporary file with the text
-        text_file = tempfile.NamedTemporaryFile(delete=False, suffix='.txt', mode='w')
+        text_file = tempfile.NamedTemporaryFile(delete=False, suffix='.txt', mode='w', encoding='utf-8')
         text_file.write(text)
         text_file.close()
         
-        # Run edge-tts as subprocess
+        # Run edge-tts as subprocess using -f flag
         cmd = [
             "edge-tts",
-            "--text-file", text_file.name,
+            "-f", text_file.name,
             "--voice", voice,
             "--write-media", tmp_path
         ]
@@ -262,22 +310,23 @@ def text_to_speech_subprocess(text):
         st.error(f"❌ Voice generation failed: {e}")
         return None
 
-def play_voice_explanation():
-    """Play the voice explanation using the best available method."""
-    script = get_voice_script()
+def play_voice_explanation(lang):
+    """Play the voice explanation in the selected language."""
+    if lang not in VOICE_SCRIPTS:
+        st.error("Language not supported.")
+        return
     
-    # Try subprocess method first (more reliable on Streamlit Cloud)
-    audio_bytes = text_to_speech_subprocess(script)
+    script_data = VOICE_SCRIPTS[lang]
+    script = script_data["script"]
+    voice = script_data["voice"]
     
-    # If subprocess fails, try the async method
-    if audio_bytes is None:
-        audio_bytes = text_to_speech_edge_tts(script)
+    audio_bytes = text_to_speech_subprocess(script, voice)
     
     if audio_bytes:
         st.audio(audio_bytes, format='audio/mp3')
-        st.success("✅ Voice explanation played!")
+        st.success(f"✅ Voice explanation played in {script_data['name']}!")
     else:
-        st.error("❌ Unable to generate voice. Please check that edge-tts is installed.")
+        st.error("❌ Unable to generate voice. Please check edge-tts installation.")
 
 # ====== SIDEBAR ======
 with st.sidebar:
@@ -295,11 +344,21 @@ with st.sidebar:
     st.markdown('</div>', unsafe_allow_html=True)
     st.markdown("---")
 
-    # ---- AI VOICE BUTTON ----
+    # ---- AI VOICE SECTION ----
     st.markdown("### 🔊 AI Voice")
+    
+    # Language selector
+    lang_options = {key: val["name"] for key, val in VOICE_SCRIPTS.items()}
+    selected_lang = st.selectbox(
+        "Select Language",
+        options=list(lang_options.keys()),
+        format_func=lambda x: lang_options[x],
+        index=0
+    )
+    
     st.markdown('<div class="voice-container">', unsafe_allow_html=True)
     if st.button("🎙️ Explain App (AI Voice)", use_container_width=True):
-        play_voice_explanation()
+        play_voice_explanation(selected_lang)
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown("---")
