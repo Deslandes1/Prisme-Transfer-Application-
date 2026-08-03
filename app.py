@@ -1,5 +1,21 @@
 import streamlit as st
 import datetime
+import tempfile
+import os
+import asyncio
+import edge_tts
+import time
+
+# ====== CHECK FOR EDGE TTS ======
+EDGE_TTS_AVAILABLE = False
+try:
+    import edge_tts
+    import asyncio
+    import tempfile
+    import os
+    EDGE_TTS_AVAILABLE = True
+except ImportError:
+    pass
 
 # ====== PAGE CONFIG ======
 st.set_page_config(
@@ -101,6 +117,13 @@ st.markdown("""
         border-bottom: 2px solid #00209F;
         padding-bottom: 4px;
     }
+    .region-subtitle {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #1a3a8a;
+        margin-top: 8px;
+        margin-bottom: 2px;
+    }
     .footer {
         text-align: center;
         padding: 1.5rem;
@@ -161,11 +184,153 @@ st.markdown("""
         border: 1px solid #99ccff;
         backdrop-filter: blur(4px);
     }
+    .voice-btn {
+        margin: 10px 0;
+    }
+    @keyframes typing {
+        from { opacity: 0.3; }
+        to { opacity: 1; }
+    }
+    .typing-demo {
+        animation: typing 0.5s ease-in-out;
+    }
     @media (max-width: 768px) {
         .main-header h1 { font-size: 1.8rem; }
     }
 </style>
 """, unsafe_allow_html=True)
+
+# ====== VOICE FUNCTIONS ======
+def text_to_speech(text, lang='en'):
+    if not EDGE_TTS_AVAILABLE:
+        raise RuntimeError("edge-tts not installed. Please add 'edge-tts>=6.1.9' to your requirements.txt.")
+    voice_map = {'en': 'en-US-JennyNeural'}
+    voice = voice_map.get(lang, 'en-US-JennyNeural')
+    try:
+        communicate = edge_tts.Communicate(text, voice)
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.mp3') as tmp:
+            tmp_path = tmp.name
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(communicate.save(tmp_path))
+        loop.close()
+        with open(tmp_path, 'rb') as f:
+            audio_bytes = f.read()
+        os.unlink(tmp_path)
+        return audio_bytes
+    except Exception as e:
+        raise RuntimeError(f"edge-tts generation failed: {e}")
+
+# ====== VOICE SCRIPT ======
+def get_voice_script():
+    return (
+        "Welcome to Prisme Transfer. "
+        "Prisme Transfer is a global money transfer platform that connects Haiti to the world. "
+        "We partner with over 20 international money transfer companies to deliver funds directly into MonCash mobile wallets or for pick-up at Fonkoze locations. "
+        "To use our service, simply register with your personal details on the right side of this page. "
+        "Watch as I demonstrate how to fill out the registration form. "
+        "First, enter your first name. Then your last name. Next, your street address, city, and your ID number. "
+        "Then provide your email address and phone number. Select your country from the dropdown. "
+        "Finally, check the terms and conditions box and click the register button. "
+        "After registering, choose a partner from the list on the left. Each partner name is a clickable link that will take you to their official website. "
+        "You can send or receive money to or from anywhere in the world. "
+        "Our partners include Boss Revolution, SendWave, Tap Tap, Share Money, C.A.M, Digicel International, Viamericas, Girosol, Cashela, Majority, Intercambio Express, RevoluSend, Remitly, RIA, Xoom, UNFCU, MoneyGram, Girofacil, Uno Money Transfers, More Money, Trans Fast, AFEX, Orange Money, WorldRemit, Cibao Express, and many more. "
+        "We also provide links to other popular transfer services like Western Union, UNITransfer, and others, even if they are not official partners. "
+        "Prisme Transfer is built for Haiti, connected to the world. "
+        "To support our platform, you can send donations to GlobalInternet.py. "
+        "Our phone number for donations is (509)-47385663 and our email is deslandes78@gmail.com. "
+        "Every contribution helps us improve and expand our services. "
+        "This application was built by Gesner Deslandes, Chief Engineer at GlobalInternet.py. "
+        "Contact us at (509) 4738-5663 or deslandes78@gmail.com. "
+        "Thank you for using Prisme Transfer."
+    )
+
+# ====== JAVASCRIPT FOR AUTO-FILL & SCROLL DEMO ======
+def run_demo_js():
+    demo_js = """
+    <script>
+    function runDemo() {
+        // Scroll to the form
+        const form = document.querySelector('.form-container');
+        if (form) {
+            form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        // Wait for scroll to complete
+        setTimeout(() => {
+            // Find all input fields
+            const inputs = document.querySelectorAll('.stTextInput input, .stTextArea textarea, .stSelectbox select, .stCheckbox input');
+            
+            // Demo data
+            const demoData = {
+                'First Name': 'Jean',
+                'Last Name': 'Pierre',
+                'Street Address': '123 Rue de la Paix',
+                'City': 'Port-au-Prince',
+                'ID Number': '1234-5678-9012',
+                'Email': 'jean.pierre@example.com',
+                'Phone Number': '+509 4738-5663'
+            };
+            
+            // Find and fill each input
+            let index = 0;
+            const fieldNames = Object.keys(demoData);
+            
+            function fillNextField() {
+                if (index >= fieldNames.length) {
+                    // After all fields filled, check the checkbox
+                    const checkbox = document.querySelector('.stCheckbox input[type="checkbox"]');
+                    if (checkbox) {
+                        checkbox.checked = true;
+                        checkbox.dispatchEvent(new Event('change'));
+                    }
+                    // Trigger the button after a moment
+                    setTimeout(() => {
+                        const button = document.querySelector('.stButton button');
+                        if (button) {
+                            button.click();
+                        }
+                    }, 500);
+                    return;
+                }
+                
+                const fieldName = fieldNames[index];
+                const value = demoData[fieldName];
+                
+                // Find input by placeholder
+                const input = document.querySelector(`input[placeholder*="${fieldName}"]`);
+                if (input) {
+                    input.focus();
+                    input.value = value;
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+                index++;
+                setTimeout(fillNextField, 300);
+            }
+            
+            // Start filling after 1 second
+            setTimeout(fillNextField, 1000);
+        }, 1000);
+    }
+    
+    // Run the demo
+    runDemo();
+    </script>
+    """
+    st.components.v1.html(demo_js, height=0)
+
+def play_voice_explanation():
+    explanation_text = get_voice_script()
+    try:
+        audio_bytes = text_to_speech(explanation_text, lang='en')
+        if audio_bytes:
+            st.audio(audio_bytes, format='audio/mp3')
+            st.success("✅ Voice explanation played!")
+            # Trigger the demo after voice plays
+            st.session_state.run_demo = True
+    except Exception as e:
+        st.error(f"❌ Voice generation failed: {e}")
 
 # ====== SIDEBAR ======
 with st.sidebar:
@@ -188,6 +353,34 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown("---")
+
+    # ---- AI VOICE BUTTON ----
+    st.markdown("### 🔊 AI Voice")
+    if EDGE_TTS_AVAILABLE:
+        if st.button("🎙️ Listen & Watch Demo", use_container_width=True):
+            play_voice_explanation()
+            st.rerun()
+    else:
+        st.warning("⚠️ Voice feature not available. Please install edge-tts.")
+
+    st.markdown("---")
+
+    # ---- DONATION INFO ----
+    st.markdown("### 💝 Support Our Work")
+    st.markdown("""
+    <div style='background: rgba(255,215,0,0.15); padding: 1rem; border-radius: 8px; border: 1px solid #ffd700; text-align: center;'>
+        <div style='font-size: 1.1rem; font-weight: 600; color: #00209F;'>🙏 Donate</div>
+        <div style='font-size: 0.9rem; margin-top: 6px;'>
+            📱 <strong>(509) 4738-5663</strong><br>
+            📧 <strong>deslandes78@gmail.com</strong>
+        </div>
+        <div style='font-size: 0.8rem; opacity: 0.7; margin-top: 4px;'>
+            Your support keeps us going 🇭🇹
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     st.markdown("---")
 
@@ -224,7 +417,6 @@ with col_left:
     st.markdown("### 🌍 Our Global Partners")
     st.caption("Click any partner below to visit their platform")
 
-    # Partner data with colors and URLs
     partners = {
         "🌎 North America": [
             ("Boss Revolution", "#1a73e8", "https://www.bossrevolution.com/"),
@@ -277,7 +469,32 @@ with col_left:
             )
         st.markdown("")
 
-    st.info("💡 **Note:** Click any partner name to visit their official website and start your transfer.")
+    # ---- OTHER TRANSFER BUREAUS ----
+    st.markdown("---")
+    st.markdown("### 📤 Other Transfer Bureaus")
+    st.caption("Popular services for sending money to Haiti")
+
+    other_bureaus = [
+        ("Western Union", "#ff6600", "https://www.westernunion.com/"),
+        ("MoneyGram", "#e67e22", "https://www.moneygram.com/"),
+        ("UNITransfer", "#0044cc", "https://www.unitransfer.com/"),
+        ("CAM Transfer", "#fdcb6e", "https://www.camtransfer.com/"),
+        ("Xoom (PayPal)", "#9b59b6", "https://www.xoom.com/"),
+        ("WorldRemit", "#2980b9", "https://www.worldremit.com/"),
+        ("Ria", "#3498db", "https://www.riamoneytransfer.com/"),
+    ]
+
+    for name, color, url in other_bureaus:
+        st.markdown(
+            f'<div class="partner-item" style="border-left-color: {color}; color: {color};">'
+            f'<a href="{url}" target="_blank" style="color: {color} !important;">'
+            f'<span style="font-weight: 600;">{name}</span>'
+            f'</a>'
+            f'</div>',
+            unsafe_allow_html=True
+        )
+
+    st.info("💡 **Note:** The bureaus above are well-known transfer services. Click to visit their websites.")
 
 # ====== RIGHT COLUMN – USER REGISTRATION FORM ======
 with col_right:
@@ -285,36 +502,42 @@ with col_right:
     st.markdown("### 📝 Register to Send or Receive")
     st.caption("Fill in your details to start using Prisme Transfer services")
 
+    # If demo was triggered, run the JavaScript
+    if st.session_state.get("run_demo", False):
+        run_demo_js()
+        st.session_state.run_demo = False
+
     with st.form("user_registration", clear_on_submit=True):
         col1, col2 = st.columns(2)
         with col1:
-            first_name = st.text_input("First Name", placeholder="Jean")
+            first_name = st.text_input("First Name", placeholder="Jean", key="first_name")
         with col2:
-            last_name = st.text_input("Last Name", placeholder="Pierre")
+            last_name = st.text_input("Last Name", placeholder="Pierre", key="last_name")
 
-        street_address = st.text_input("Street Address", placeholder="123 Rue de la Paix")
-        city = st.text_input("City", placeholder="Port-au-Prince")
+        street_address = st.text_input("Street Address", placeholder="123 Rue de la Paix", key="street_address")
+        city = st.text_input("City", placeholder="Port-au-Prince", key="city")
+        id_number = st.text_input("ID Number (Passport, National ID, etc.)", placeholder="e.g., 1234-5678-9012", key="id_number")
 
         col1, col2 = st.columns(2)
         with col1:
-            email = st.text_input("Email", placeholder="jean.pierre@example.com")
+            email = st.text_input("Email", placeholder="jean.pierre@example.com", key="email")
         with col2:
-            phone = st.text_input("Phone Number", placeholder="+509 4738-5663")
+            phone = st.text_input("Phone Number", placeholder="+509 4738-5663", key="phone")
 
         countries = [
             "Haiti", "United States", "Canada", "France", "Spain", "Germany",
             "United Kingdom", "Brazil", "Mexico", "Colombia", "Chile", "Argentina",
             "Dominican Republic", "Jamaica", "Trinidad and Tobago", "Other"
         ]
-        country = st.selectbox("Country", countries)
+        country = st.selectbox("Country", countries, key="country")
 
-        terms = st.checkbox("I agree to the terms and conditions of Prisme Transfer")
+        terms = st.checkbox("I agree to the terms and conditions of Prisme Transfer", key="terms")
 
         submitted = st.form_submit_button("🚀 Register Now")
 
         if submitted:
-            if not all([first_name, last_name, street_address, city, email, phone]):
-                st.error("❌ Please fill in all fields.")
+            if not all([first_name, last_name, street_address, city, id_number, email, phone]):
+                st.error("❌ Please fill in all fields (including ID Number).")
             elif not terms:
                 st.warning("⚠️ You must agree to the terms and conditions.")
             else:
@@ -323,6 +546,7 @@ with col_right:
                     <span class="checkmark">✅</span>
                     <strong>Registration Successful!</strong><br>
                     Welcome, {first_name} {last_name}!<br>
+                    ID: {id_number}<br>
                     We will contact you at {email} or {phone} shortly.<br>
                     <span style="font-size: 0.85rem; opacity: 0.8;">You can now send or receive money through any of our partners listed on the left.</span>
                 </div>
