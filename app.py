@@ -2,17 +2,14 @@ import streamlit as st
 import datetime
 import tempfile
 import os
-import asyncio
-import edge_tts
+import subprocess
 import time
 
 # ====== CHECK FOR EDGE TTS ======
 EDGE_TTS_AVAILABLE = False
 try:
+    # Check if edge-tts is installed by trying to import it
     import edge_tts
-    import asyncio
-    import tempfile
-    import os
     EDGE_TTS_AVAILABLE = True
 except ImportError:
     pass
@@ -27,22 +24,13 @@ st.set_page_config(
 # ====== CUSTOM CSS ======
 st.markdown("""
 <style>
-    /* Main app background – light blue */
-    .stApp {
-        background-color: #e6f2ff !important;
-    }
-    .stApp [data-testid="stAppViewContainer"] {
-        background-color: #f0f8ff !important;
-    }
-    /* Sidebar – light blue */
+    .stApp { background-color: #e6f2ff !important; }
+    .stApp [data-testid="stAppViewContainer"] { background-color: #f0f8ff !important; }
     [data-testid="stSidebar"] {
         background-color: #cce5ff !important;
         border-right: 1px solid #99ccff;
     }
-    [data-testid="stSidebar"] * {
-        color: #003366 !important;
-    }
-    /* Main container */
+    [data-testid="stSidebar"] * { color: #003366 !important; }
     .main-header {
         text-align: center;
         padding: 1.5rem 0;
@@ -72,19 +60,6 @@ st.markdown("""
         max-width: 150px;
         border-radius: 12px;
         border: 2px solid #00209F;
-    }
-    .sidebar-title {
-        text-align: center;
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: #00209F;
-        margin-top: 0.5rem;
-    }
-    .sidebar-subtitle {
-        text-align: center;
-        font-size: 0.9rem;
-        color: #1a2a3a;
-        opacity: 0.8;
     }
     .partner-item {
         padding: 8px 12px;
@@ -117,13 +92,6 @@ st.markdown("""
         border-bottom: 2px solid #00209F;
         padding-bottom: 4px;
     }
-    .region-subtitle {
-        font-weight: 600;
-        font-size: 0.9rem;
-        color: #1a3a8a;
-        margin-top: 8px;
-        margin-bottom: 2px;
-    }
     .footer {
         text-align: center;
         padding: 1.5rem;
@@ -134,9 +102,7 @@ st.markdown("""
         background: rgba(255,255,255,0.5);
         border-radius: 8px;
     }
-    .footer strong {
-        color: #00209F;
-    }
+    .footer strong { color: #00209F; }
     .form-container {
         background: rgba(255,255,255,0.85);
         padding: 2rem;
@@ -184,15 +150,19 @@ st.markdown("""
         border: 1px solid #99ccff;
         backdrop-filter: blur(4px);
     }
-    .voice-btn {
+    .donate-box {
+        background: rgba(255,215,0,0.15);
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid #ffd700;
+        text-align: center;
+    }
+    .voice-container {
+        background: rgba(255,255,255,0.5);
+        padding: 0.8rem;
+        border-radius: 8px;
         margin: 10px 0;
-    }
-    @keyframes typing {
-        from { opacity: 0.3; }
-        to { opacity: 1; }
-    }
-    .typing-demo {
-        animation: typing 0.5s ease-in-out;
+        border: 1px solid #99ccff;
     }
     @media (max-width: 768px) {
         .main-header h1 { font-size: 1.8rem; }
@@ -201,34 +171,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ====== VOICE FUNCTIONS ======
-def text_to_speech(text, lang='en'):
-    if not EDGE_TTS_AVAILABLE:
-        raise RuntimeError("edge-tts not installed. Please add 'edge-tts>=6.1.9' to your requirements.txt.")
-    voice_map = {'en': 'en-US-JennyNeural'}
-    voice = voice_map.get(lang, 'en-US-JennyNeural')
-    try:
-        communicate = edge_tts.Communicate(text, voice)
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.mp3') as tmp:
-            tmp_path = tmp.name
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        loop.run_until_complete(communicate.save(tmp_path))
-        loop.close()
-        with open(tmp_path, 'rb') as f:
-            audio_bytes = f.read()
-        os.unlink(tmp_path)
-        return audio_bytes
-    except Exception as e:
-        raise RuntimeError(f"edge-tts generation failed: {e}")
-
-# ====== VOICE SCRIPT ======
 def get_voice_script():
     return (
         "Welcome to Prisme Transfer. "
         "Prisme Transfer is a global money transfer platform that connects Haiti to the world. "
         "We partner with over 20 international money transfer companies to deliver funds directly into MonCash mobile wallets or for pick-up at Fonkoze locations. "
         "To use our service, simply register with your personal details on the right side of this page. "
-        "Watch as I demonstrate how to fill out the registration form. "
         "First, enter your first name. Then your last name. Next, your street address, city, and your ID number. "
         "Then provide your email address and phone number. Select your country from the dropdown. "
         "Finally, check the terms and conditions box and click the register button. "
@@ -238,152 +186,140 @@ def get_voice_script():
         "We also provide links to other popular transfer services like Western Union, UNITransfer, and others, even if they are not official partners. "
         "Prisme Transfer is built for Haiti, connected to the world. "
         "To support our platform, you can send donations to GlobalInternet.py. "
-        "Our phone number for donations is (509)-47385663 and our email is deslandes78@gmail.com. "
+        "Our phone number for donations is (509) 4738-5663 and our email is deslandes78@gmail.com. "
         "Every contribution helps us improve and expand our services. "
         "This application was built by Gesner Deslandes, Chief Engineer at GlobalInternet.py. "
         "Contact us at (509) 4738-5663 or deslandes78@gmail.com. "
         "Thank you for using Prisme Transfer."
     )
 
-# ====== JAVASCRIPT FOR AUTO-FILL & SCROLL DEMO ======
-def run_demo_js():
-    demo_js = """
-    <script>
-    function runDemo() {
-        // Scroll to the form
-        const form = document.querySelector('.form-container');
-        if (form) {
-            form.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        
-        // Wait for scroll to complete
-        setTimeout(() => {
-            // Find all input fields
-            const inputs = document.querySelectorAll('.stTextInput input, .stTextArea textarea, .stSelectbox select, .stCheckbox input');
-            
-            // Demo data
-            const demoData = {
-                'First Name': 'Jean',
-                'Last Name': 'Pierre',
-                'Street Address': '123 Rue de la Paix',
-                'City': 'Port-au-Prince',
-                'ID Number': '1234-5678-9012',
-                'Email': 'jean.pierre@example.com',
-                'Phone Number': '+509 4738-5663'
-            };
-            
-            // Find and fill each input
-            let index = 0;
-            const fieldNames = Object.keys(demoData);
-            
-            function fillNextField() {
-                if (index >= fieldNames.length) {
-                    // After all fields filled, check the checkbox
-                    const checkbox = document.querySelector('.stCheckbox input[type="checkbox"]');
-                    if (checkbox) {
-                        checkbox.checked = true;
-                        checkbox.dispatchEvent(new Event('change'));
-                    }
-                    // Trigger the button after a moment
-                    setTimeout(() => {
-                        const button = document.querySelector('.stButton button');
-                        if (button) {
-                            button.click();
-                        }
-                    }, 500);
-                    return;
-                }
-                
-                const fieldName = fieldNames[index];
-                const value = demoData[fieldName];
-                
-                // Find input by placeholder
-                const input = document.querySelector(`input[placeholder*="${fieldName}"]`);
-                if (input) {
-                    input.focus();
-                    input.value = value;
-                    input.dispatchEvent(new Event('input', { bubbles: true }));
-                    input.dispatchEvent(new Event('change', { bubbles: true }));
-                }
-                index++;
-                setTimeout(fillNextField, 300);
-            }
-            
-            // Start filling after 1 second
-            setTimeout(fillNextField, 1000);
-        }, 1000);
-    }
-    
-    // Run the demo
-    runDemo();
-    </script>
-    """
-    st.components.v1.html(demo_js, height=0)
-
-def play_voice_explanation():
-    explanation_text = get_voice_script()
+def text_to_speech_edge_tts(text):
+    """Generate speech using edge-tts (async)"""
     try:
-        audio_bytes = text_to_speech(explanation_text, lang='en')
-        if audio_bytes:
-            st.audio(audio_bytes, format='audio/mp3')
-            st.success("✅ Voice explanation played!")
-            # Trigger the demo after voice plays
-            st.session_state.run_demo = True
+        import edge_tts
+        import asyncio
+        
+        voice = "en-US-JennyNeural"
+        
+        async def generate_audio():
+            communicate = edge_tts.Communicate(text, voice)
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.mp3') as tmp:
+                tmp_path = tmp.name
+            await communicate.save(tmp_path)
+            return tmp_path
+        
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        audio_path = loop.run_until_complete(generate_audio())
+        loop.close()
+        
+        with open(audio_path, 'rb') as f:
+            audio_bytes = f.read()
+        os.unlink(audio_path)
+        return audio_bytes
     except Exception as e:
         st.error(f"❌ Voice generation failed: {e}")
+        return None
+
+def text_to_speech_subprocess(text):
+    """Generate speech using edge-tts via subprocess (more reliable in Streamlit Cloud)"""
+    try:
+        import tempfile
+        import subprocess
+        import os
+        
+        voice = "en-US-JennyNeural"
+        tmp_path = tempfile.NamedTemporaryFile(delete=False, suffix='.mp3').name
+        
+        # Create a temporary file with the text
+        text_file = tempfile.NamedTemporaryFile(delete=False, suffix='.txt', mode='w')
+        text_file.write(text)
+        text_file.close()
+        
+        # Run edge-tts as subprocess
+        cmd = [
+            "edge-tts",
+            "--text-file", text_file.name,
+            "--voice", voice,
+            "--write-media", tmp_path
+        ]
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        
+        # Clean up text file
+        os.unlink(text_file.name)
+        
+        if result.returncode != 0:
+            raise RuntimeError(f"edge-tts failed: {result.stderr}")
+        
+        if not os.path.exists(tmp_path) or os.path.getsize(tmp_path) == 0:
+            raise RuntimeError("Generated audio file is empty")
+        
+        with open(tmp_path, 'rb') as f:
+            audio_bytes = f.read()
+        os.unlink(tmp_path)
+        return audio_bytes
+    except Exception as e:
+        st.error(f"❌ Voice generation failed: {e}")
+        return None
+
+def play_voice_explanation():
+    """Play the voice explanation using the best available method."""
+    script = get_voice_script()
+    
+    # Try subprocess method first (more reliable on Streamlit Cloud)
+    audio_bytes = text_to_speech_subprocess(script)
+    
+    # If subprocess fails, try the async method
+    if audio_bytes is None:
+        audio_bytes = text_to_speech_edge_tts(script)
+    
+    if audio_bytes:
+        st.audio(audio_bytes, format='audio/mp3')
+        st.success("✅ Voice explanation played!")
+    else:
+        st.error("❌ Unable to generate voice. Please check that edge-tts is installed.")
 
 # ====== SIDEBAR ======
 with st.sidebar:
     st.markdown('<div class="sidebar-logo">', unsafe_allow_html=True)
-    
-    # ---- YOUR LOGO ----
     st.image(
         "https://raw.githubusercontent.com/Deslandes1/Prisme-Transfer-Application-/main/New%20logo.png",
         width=150
     )
-    
     st.markdown("""
     <div style='text-align: center; margin-top: -0.5rem;'>
-        <div style='font-size: 1.5rem; font-weight: 800; color: #00209F;'>
-            Prisme Transfer
-        </div>
-        <div style='font-size: 0.9rem; color: #1a2a3a; opacity: 0.8;'>
-            Global Money Transfer
-        </div>
+        <div style='font-size: 1.5rem; font-weight: 800; color: #00209F;'>Prisme Transfer</div>
+        <div style='font-size: 0.9rem; color: #1a2a3a; opacity: 0.8;'>Global Money Transfer</div>
     </div>
     """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
-
     st.markdown("---")
 
     # ---- AI VOICE BUTTON ----
     st.markdown("### 🔊 AI Voice")
-    if EDGE_TTS_AVAILABLE:
-        if st.button("🎙️ Listen & Watch Demo", use_container_width=True):
-            play_voice_explanation()
-            st.rerun()
-    else:
-        st.warning("⚠️ Voice feature not available. Please install edge-tts.")
+    st.markdown('<div class="voice-container">', unsafe_allow_html=True)
+    if st.button("🎙️ Explain App (AI Voice)", use_container_width=True):
+        play_voice_explanation()
+    st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown("---")
 
     # ---- DONATION INFO ----
     st.markdown("### 💝 Support Our Work")
     st.markdown("""
-    <div style='background: rgba(255,215,0,0.15); padding: 1rem; border-radius: 8px; border: 1px solid #ffd700; text-align: center;'>
+    <div class="donate-box">
         <div style='font-size: 1.1rem; font-weight: 600; color: #00209F;'>🙏 Donate</div>
         <div style='font-size: 0.9rem; margin-top: 6px;'>
             📱 <strong>(509) 4738-5663</strong><br>
             📧 <strong>deslandes78@gmail.com</strong>
         </div>
-        <div style='font-size: 0.8rem; opacity: 0.7; margin-top: 4px;'>
-            Your support keeps us going 🇭🇹
-        </div>
+        <div style='font-size: 0.8rem; opacity: 0.7; margin-top: 4px;'>Your support keeps us going 🇭🇹</div>
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown("---")
 
+    # ---- CONTACT INFO ----
     st.markdown("""
     <div style='text-align: center;'>
         <div style='font-size: 0.9rem; color: #1a2a3a;'>
@@ -412,7 +348,7 @@ st.markdown("""
 # ====== TWO-COLUMN LAYOUT ======
 col_left, col_right = st.columns([1, 1], gap="large")
 
-# ====== LEFT COLUMN – PARTNER LIST WITH LINKS ======
+# ====== LEFT COLUMN – PARTNER LIST ======
 with col_left:
     st.markdown("### 🌍 Our Global Partners")
     st.caption("Click any partner below to visit their platform")
@@ -473,7 +409,6 @@ with col_left:
     st.markdown("---")
     st.markdown("### 📤 Other Transfer Bureaus")
     st.caption("Popular services for sending money to Haiti")
-
     other_bureaus = [
         ("Western Union", "#ff6600", "https://www.westernunion.com/"),
         ("MoneyGram", "#e67e22", "https://www.moneygram.com/"),
@@ -483,7 +418,6 @@ with col_left:
         ("WorldRemit", "#2980b9", "https://www.worldremit.com/"),
         ("Ria", "#3498db", "https://www.riamoneytransfer.com/"),
     ]
-
     for name, color, url in other_bureaus:
         st.markdown(
             f'<div class="partner-item" style="border-left-color: {color}; color: {color};">'
@@ -493,19 +427,13 @@ with col_left:
             f'</div>',
             unsafe_allow_html=True
         )
-
     st.info("💡 **Note:** The bureaus above are well-known transfer services. Click to visit their websites.")
 
-# ====== RIGHT COLUMN – USER REGISTRATION FORM ======
+# ====== RIGHT COLUMN – REGISTRATION FORM ======
 with col_right:
     st.markdown('<div class="form-container">', unsafe_allow_html=True)
     st.markdown("### 📝 Register to Send or Receive")
     st.caption("Fill in your details to start using Prisme Transfer services")
-
-    # If demo was triggered, run the JavaScript
-    if st.session_state.get("run_demo", False):
-        run_demo_js()
-        st.session_state.run_demo = False
 
     with st.form("user_registration", clear_on_submit=True):
         col1, col2 = st.columns(2)
