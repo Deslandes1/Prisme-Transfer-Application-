@@ -136,86 +136,66 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ====== VOICE SCRIPTS IN MULTIPLE LANGUAGES ======
+# ====== VOICE SCRIPTS – GLOBALINTERNET.PY DIRECTORY ======
 VOICE_SCRIPTS = {
     "en": {
         "name": "English",
         "voice": "en-US-JennyNeural",
         "script": (
-            "This app is brought to you by Gesner Deslandes, Chief Engineer at GlobalInternet.py. "
-            "Prisme Transfer is a global money transfer platform that connects Haiti to the world. "
-            "We partner with over 20 international money transfer companies to deliver funds directly into MonCash mobile wallets or for pick-up at Fonkoze locations. "
-            "To use our service, simply choose a partner from the list below. Each partner name is a clickable link that will take you to their official website. "
-            "You can send or receive money to or from anywhere in the world. "
-            "Our partners include Boss Revolution, SendWave, Tap Tap, Share Money, C.A.M, Digicel International, Viamericas, Girosol, Cashela, Majority, Intercambio Express, RevoluSend, Remitly, RIA, Xoom, UNFCU, MoneyGram, Girofacil, Uno Money Transfers, More Money, Trans Fast, AFEX, Orange Money, WorldRemit, Cibao Express, and many more. "
-            "We also provide links to other popular transfer services like Western Union, UNITransfer, and others. "
-            "We also list all major Haitian banks so you can access online banking directly. "
-            "Prisme Transfer is built for Haiti, connected to the world. "
-            "To support our platform, you can send donations to GlobalInternet.py. "
-            "Our phone number for donations is (509) 4738-5663 and our email is deslandes78@gmail.com. "
-            "Every contribution helps us improve and expand our services. "
-            "Contact us at (509) 4738-5663 or deslandes78@gmail.com. "
-            "Thank you for using GlobalInternet.py and Prisme Transfer."
+            "Welcome to GlobalInternet.py. "
+            "This app brings together a comprehensive list of money transfer bureaus and Haitian banking institutions in one place. "
+            "You can access popular services like Western Union, MoneyGram, Ria, Xoom, WorldRemit, Remitly, SendWave, Tap Tap, UNITransfer, CAM Transfer, and many more. "
+            "We also provide direct links to all major Haitian banks such as UniBank, Sogebank, BNC, BRH, and others. "
+            "Whether you need to send money internationally or manage your local banking, all the resources are right here. "
+            "This application is brought to you by Gesner Deslandes, Chief Engineer at GlobalInternet.py. "
+            "To support our work, you can send donations to GlobalInternet.py. "
+            "Our phone number is (509) 4738-5663 and email is deslandes78@gmail.com. "
+            "Thank you for using GlobalInternet.py."
         )
     },
     "fr": {
         "name": "Français",
         "voice": "fr-FR-DeniseNeural",
         "script": (
+            "Bienvenue sur GlobalInternet.py. "
+            "Cette application rassemble en un seul endroit une liste complète des bureaux de transfert d'argent et des institutions bancaires haïtiennes. "
+            "Vous pouvez accéder à des services populaires tels que Western Union, MoneyGram, Ria, Xoom, WorldRemit, Remitly, SendWave, Tap Tap, UNITransfer, CAM Transfer, et bien d'autres. "
+            "Nous fournissons également des liens directs vers toutes les principales banques haïtiennes comme UniBank, Sogebank, BNC, BRH, et autres. "
+            "Que vous ayez besoin d'envoyer de l'argent à l'international ou de gérer vos opérations bancaires locales, toutes les ressources sont ici. "
             "Cette application vous est présentée par Gesner Deslandes, Ingénieur en Chef chez GlobalInternet.py. "
-            "Prisme Transfer est une plateforme mondiale de transfert d'argent qui connecte Haïti au monde. "
-            "Nous nous associons à plus de 20 sociétés internationales de transfert d'argent pour livrer les fonds directement dans les portefeuilles mobiles MonCash ou pour les retirer dans les agences Fonkoze. "
-            "Pour utiliser notre service, choisissez simplement un partenaire dans la liste ci-dessous. Chaque nom de partenaire est un lien cliquable qui vous mènera à son site officiel. "
-            "Vous pouvez envoyer ou recevoir de l'argent partout dans le monde. "
-            "Nos partenaires incluent Boss Revolution, SendWave, Tap Tap, Share Money, C.A.M, Digicel International, Viamericas, Girosol, Cashela, Majority, Intercambio Express, RevoluSend, Remitly, RIA, Xoom, UNFCU, MoneyGram, Girofacil, Uno Money Transfers, More Money, Trans Fast, AFEX, Orange Money, WorldRemit, Cibao Express, et bien d'autres. "
-            "Nous fournissons également des liens vers d'autres services de transfert populaires comme Western Union, UNITransfer, et d'autres. "
-            "Nous listons également toutes les grandes banques haïtiennes pour que vous puissiez accéder directement à la banque en ligne. "
-            "Prisme Transfer est construit pour Haïti, connecté au monde. "
-            "Pour soutenir notre plateforme, vous pouvez envoyer des dons à GlobalInternet.py. "
-            "Notre numéro de téléphone pour les dons est le (509) 4738-5663 et notre e-mail est deslandes78@gmail.com. "
-            "Chaque contribution nous aide à améliorer et à étendre nos services. "
-            "Contactez-nous au (509) 4738-5663 ou par e-mail à deslandes78@gmail.com. "
-            "Merci d'utiliser GlobalInternet.py et Prisme Transfer."
+            "Pour soutenir notre travail, vous pouvez envoyer des dons à GlobalInternet.py. "
+            "Notre numéro de téléphone est le (509) 4738-5663 et notre e-mail est deslandes78@gmail.com. "
+            "Merci d'utiliser GlobalInternet.py."
         )
     },
     "es": {
         "name": "Español",
         "voice": "es-ES-ElviraNeural",
         "script": (
+            "Bienvenido a GlobalInternet.py. "
+            "Esta aplicación reúne en un solo lugar una lista completa de oficinas de transferencia de dinero e instituciones bancarias haitianas. "
+            "Puede acceder a servicios populares como Western Union, MoneyGram, Ria, Xoom, WorldRemit, Remitly, SendWave, Tap Tap, UNITransfer, CAM Transfer, y muchos más. "
+            "También proporcionamos enlaces directos a todos los principales bancos haitianos como UniBank, Sogebank, BNC, BRH, y otros. "
+            "Ya sea que necesite enviar dinero internacionalmente o administrar sus operaciones bancarias locales, todos los recursos están aquí. "
             "Esta aplicación es presentada por Gesner Deslandes, Ingeniero Jefe en GlobalInternet.py. "
-            "Prisme Transfer es una plataforma global de transferencia de dinero que conecta a Haití con el mundo. "
-            "Nos asociamos con más de 20 empresas internacionales de transferencia de dinero para entregar fondos directamente a billeteras móviles MonCash o para recoger en ubicaciones de Fonkoze. "
-            "Para usar nuestro servicio, simplemente elija un socio de la lista a continuación. Cada nombre de socio es un enlace en el que se puede hacer clic y que lo llevará a su sitio web oficial. "
-            "Puede enviar o recibir dinero a o desde cualquier parte del mundo. "
-            "Nuestros socios incluyen Boss Revolution, SendWave, Tap Tap, Share Money, C.A.M, Digicel International, Viamericas, Girosol, Cashela, Majority, Intercambio Express, RevoluSend, Remitly, RIA, Xoom, UNFCU, MoneyGram, Girofacil, Uno Money Transfers, More Money, Trans Fast, AFEX, Orange Money, WorldRemit, Cibao Express, y muchos más. "
-            "También proporcionamos enlaces a otros servicios de transferencia populares como Western Union, UNITransfer, y otros. "
-            "También enumeramos todos los principales bancos haitianos para que pueda acceder a la banca en línea directamente. "
-            "Prisme Transfer está construido para Haití, conectado al mundo. "
-            "Para apoyar nuestra plataforma, puede enviar donaciones a GlobalInternet.py. "
-            "Nuestro número de teléfono para donaciones es (509) 4738-5663 y nuestro correo electrónico es deslandes78@gmail.com. "
-            "Cada contribución nos ayuda a mejorar y expandir nuestros servicios. "
-            "Contáctenos al (509) 4738-5663 o por correo a deslandes78@gmail.com. "
-            "Gracias por usar GlobalInternet.py y Prisme Transfer."
+            "Para apoyar nuestro trabajo, puede enviar donaciones a GlobalInternet.py. "
+            "Nuestro número de teléfono es (509) 4738-5663 y nuestro correo electrónico es deslandes78@gmail.com. "
+            "Gracias por usar GlobalInternet.py."
         )
     },
     "zh": {
         "name": "中文",
         "voice": "zh-CN-XiaoxiaoNeural",
         "script": (
-            "本应用由 GlobalInternet.py 首席工程师 Gesner Deslandes 为您呈现。"
-            "Prisme Transfer 是一个全球性的汇款平台，将海地与世界连接起来。"
-            "我们与超过 20 家国际汇款公司合作，直接将资金存入 MonCash 手机钱包或在 Fonkoze 网点取款。"
-            "要使用我们的服务，只需从下方列表中选择一个合作伙伴。每个合作伙伴名称都是一个可点击的链接，将带您进入其官方网站。"
-            "您可以在世界任何地方发送或接收资金。"
-            "我们的合作伙伴包括 Boss Revolution、SendWave、Tap Tap、Share Money、C.A.M、Digicel International、Viamericas、Girosol、Cashela、Majority、Intercambio Express、RevoluSend、Remitly、RIA、Xoom、UNFCU、MoneyGram、Girofacil、Uno Money Transfers、More Money、Trans Fast、AFEX、Orange Money、WorldRemit、Cibao Express 等等。"
-            "我们还提供其他流行汇款服务的链接，如 Western Union、UNITransfer 等。"
-            "我们还列出了所有主要的海地银行，方便您直接访问网上银行。"
-            "Prisme Transfer 为海地而生，与世界相连。"
-            "为了支持我们的平台，您可以向 GlobalInternet.py 捐款。"
-            "我们的捐款电话是 (509) 4738-5663，电子邮件是 deslandes78@gmail.com。"
-            "每一笔捐款都有助于我们改善和扩展服务。"
-            "请通过 (509) 4738-5663 或 deslandes78@gmail.com 与我们联系。"
-            "感谢您使用 GlobalInternet.py 和 Prisme Transfer。"
+            "欢迎来到 GlobalInternet.py。"
+            "这个应用程序将汇款机构和海地银行机构的全面列表集中在一个地方。"
+            "您可以访问流行的服务，如 Western Union、MoneyGram、Ria、Xoom、WorldRemit、Remitly、SendWave、Tap Tap、UNITransfer、CAM Transfer 等等。"
+            "我们还提供所有主要海地银行的直接链接，如 UniBank、Sogebank、BNC、BRH 等。"
+            "无论您是需要国际汇款还是管理本地银行业务，所有资源都在这里。"
+            "此应用程序由 GlobalInternet.py 的首席工程师 Gesner Deslandes 为您呈现。"
+            "为了支持我们的工作，您可以向 GlobalInternet.py 捐款。"
+            "我们的电话号码是 (509) 4738-5663，电子邮件是 deslandes78@gmail.com。"
+            "感谢您使用 GlobalInternet.py。"
         )
     }
 }
@@ -417,7 +397,7 @@ for i, (name, color, url) in enumerate(banks):
 
 st.markdown("---")
 
-# ---- 3. PRISME TRANSFER PARTNERS ----
+# ---- 3. PRISME TRANSFER PARTNERS (still kept as a category) ----
 st.markdown('<div class="section-title">🤝 Prisme Transfer Partners</div>', unsafe_allow_html=True)
 st.caption("Click to access Prisme Transfer's partner network")
 
